@@ -414,8 +414,10 @@ download_common() {
         if ! [ -f $test_lib ]; then
             test_lib="core/librealm-sync-ios-dbg.a"
         fi
+        local isysroot=$(xcrun --sdk iphonesimulator --show-sdk-path)
+
         clang++ -Wl,-all_load -g -arch x86_64 -shared -target ios13.0 \
-          -isysroot $(xcrun --sdk iphonesimulator --show-sdk-path) -o tmp.dylib \
+          -isysroot "$isysroot" -o tmp.dylib \
           $test_lib -lz -framework Security
         if ! dsymutil tmp.dylib -o tmp.dSYM 2> /dev/null; then
             find core -name '*.a' -exec strip -x "{}" \; 2> /dev/null
